@@ -1,19 +1,11 @@
 package com.example.car_crashv1;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Context;
-import android.os.Build;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
-import android.util.Log;
-import android.widget.Button;
-import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -23,16 +15,15 @@ import java.util.TimerTask;
 public class MainActivity extends AppCompatActivity {
     private static final long DELAY = 1000;
     private ImageButton leftBTN,rightBTN;
-private Timer timer;
-private Timer timer2;
-private ImageView stones[][];
-private ImageView carView[];
-private ImageView hearts[];
-private int carPos = 1;
-private int life = 2;
-private TextView msg;
-private Vibrator v;
-private int stonePos[][] = {
+    private Timer timer;
+    private Timer timer2;
+    private ImageView stones[][];
+    private ImageView carView[];
+    private ImageView hearts[];
+    private int carPos = 1;
+    private int life = 2;
+    private TextView msg;
+    private int stonePos[][] = {
         {0,0,0},
         {0,0,0},
         {0,0,0},
@@ -48,16 +39,12 @@ private int stonePos[][] = {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-
+        msg = findViewById(R.id.msg);
         findViews();
         findStoneImgs();
         findCarImgs();
         setBTNs();
         startTicker();
-
-
-
     }
 
     private void startTicker() {
@@ -69,7 +56,6 @@ private int stonePos[][] = {
             public void run() {
                 runOnUiThread(()-> {
                     int x = (int)(Math.random()*3);
-                    Log.d("random number ", "random number " + x);
                     stonePos[0][x] = 1;
                     stones[0][x].setVisibility(View.VISIBLE);
                     changed[0][x] = 1;
@@ -81,24 +67,19 @@ private int stonePos[][] = {
             @Override
             public void run() {
                 runOnUiThread(()-> {
-                    Log.d("timeTick","Tick"+ Thread.currentThread().getName());
+                    msg.setVisibility(View.INVISIBLE);
                     resetLastlane();
-                    //showpos();
                     for (int i = 0; i < stonePos.length; i++) {
                         for (int j = 0; j < stonePos[i].length; j++) {
                             if (stonePos[i][j] == 1 && changed[i][j] == 0){
                                 stonePos[i][j] = 0;
-                                Log.d("J pos","J pos" + j);
-
                                 if (i < 3){
                                     stones[i][j].setVisibility(View.INVISIBLE);
                                     stonePos[i+1][j] = 1;
                                     changed[i+1][j] = 1;
-                                    Log.d("J pos","J pos" + j);
                                 }
                                 if (i < 2){
                                     stones[i+1][j].setVisibility(View.VISIBLE);
-                                    Log.d("J pos","J pos" + j);
                                 }
                             }
                         }
@@ -107,6 +88,7 @@ private int stonePos[][] = {
                         if (stonePos[3][carPos] == 1){
                             hearts[life].setVisibility(View.INVISIBLE);
                             life = life - 1;
+                            msg.setVisibility(View.VISIBLE);
                             vibrator();
 
                             if (life == -1){
@@ -118,7 +100,6 @@ private int stonePos[][] = {
                             }
                             break;
                         }
-
                     }
                     resetChanged();
                 });
@@ -132,16 +113,6 @@ private int stonePos[][] = {
         ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
     }
 
-//    private void showpos() {
-//        Log.d("stonepos","\n" + stonePos[0][0] + " " + stonePos[0][1] + " " + stonePos[0][2] );
-//        Log.d("stonepos","\n" + stonePos[1][0] + " " + stonePos[1][1] + " " + stonePos[1][2] );
-//        Log.d("stonepos","\n" + stonePos[2][0] + " " + stonePos[2][1] + " " + stonePos[2][2] );
-//
-//        Log.d("changed","\n" + changed[0][0] + " " + changed[0][1] + " " + changed[0][2] );
-//        Log.d("changed","\n" + changed[1][0] + " " + changed[1][1] + " " + changed[1][2] );
-//        Log.d("changed","\n" + changed[2][0] + " " + changed[2][1] + " " + changed[2][2] );
-//
-//    }
 
     private void resetLastlane() {
         for (int i = 0; i < stonePos[3].length; i++) {
@@ -205,7 +176,6 @@ private int stonePos[][] = {
 
                         break;
                 }
-
             }
         });
     }
